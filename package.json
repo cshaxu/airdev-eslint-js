@@ -1,0 +1,26 @@
+{
+  "name": "@airdev/eslint",
+  "version": "0.0.0",
+  "description": "airdev project ESLint rules",
+  "main": "./index.js",
+  "files": [
+    "index.js",
+    "rules",
+    "utils",
+    "README.md"
+  ],
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "lint",
+    "rules"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": "^9.0.0"
+  },
+  "dependencies": {
+    "typescript": "^5.9.3",
+    "minimatch": "^10.2.4"
+  }
+}
