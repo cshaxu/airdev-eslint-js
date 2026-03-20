@@ -1,7 +1,11 @@
+const minimatch = require('minimatch');
 const path = require('path');
-const { loadFromCwd } = require('../utils/load-from-cwd');
 
-const minimatch = loadFromCwd('minimatch');
+const {
+  getCwd,
+  getFilename,
+  getSourceCode,
+} = require('../utils/context');
 
 function getAllIndexes(sourceString, subString) {
   const indexes = [];
@@ -44,15 +48,15 @@ const noSpecificStringsRule = {
     ],
   },
   create: function (context) {
-    const basePath = context.getCwd();
-    const currentFilePath = path.resolve(context.getFilename());
+    const basePath = getCwd(context);
+    const currentFilePath = path.resolve(getFilename(context));
     const relativeFilePath = path.relative(basePath, currentFilePath);
 
     const options = context.options[0] ?? [];
 
     return {
       Program(node) {
-        const sourceCode = context.getSourceCode().getText();
+        const sourceCode = getSourceCode(context).getText();
         options.forEach((option) => {
           const disallowedString = option.name;
           const indexes = getAllIndexes(sourceCode, disallowedString);
@@ -93,7 +97,7 @@ const noSpecificStringsRule = {
             context.report({
               node,
               message: `String "${disallowedString}" disallowed.${option.description ? ` ${option.description}` : ''}`,
-              loc: context.getSourceCode().getLocFromIndex(index),
+              loc: getSourceCode(context).getLocFromIndex(index),
               fix: option.replacement
                 ? (fixer) =>
                     fixer.replaceTextRange(

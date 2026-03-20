@@ -1,7 +1,11 @@
 const path = require('path');
-const { loadFromCwd } = require('../utils/load-from-cwd');
+const ts = require('typescript');
 
-const ts = loadFromCwd('typescript');
+const {
+  getCwd,
+  getFilename,
+  getSourceCode,
+} = require('../utils/context');
 
 function parseTypeParameter(typeText) {
   const sourceFile = ts.createSourceFile(
@@ -68,7 +72,7 @@ const requireNextPropsRule = {
   create: function (context) {
     return {
       Program(node) {
-        const fileName = context.getFilename();
+        const fileName = getFilename(context);
         const isNextPage = fileName.endsWith('page.tsx');
         const isNextLayout = fileName.endsWith('layout.tsx');
         const isNextError = fileName.endsWith('error.tsx');
@@ -140,8 +144,8 @@ const requireNextPropsRule = {
         const resolvedType = resolveType(paramType);
 
         const relativeFilePath = path.relative(
-          context.getCwd(),
-          context.getFilename()
+          getCwd(context),
+          getFilename(context)
         );
         const segments = relativeFilePath.split(path.sep);
         const paramKeys = segments
@@ -193,9 +197,8 @@ const requireNextPropsRule = {
           report();
         } else if (isTypeParamsExpected) {
           const actualTypeParamNode = resolvedType.typeParameters.params[0];
-          const actualTypeParamText = context
-            .getSourceCode()
-            .getText(actualTypeParamNode);
+          const actualTypeParamText =
+            getSourceCode(context).getText(actualTypeParamNode);
           const actualTypeParamJson = parseTypeParameter(actualTypeParamText);
           const isKeyMatch =
             paramKeys.every((key) => key in actualTypeParamJson) &&
@@ -213,9 +216,8 @@ const requireNextPropsRule = {
             report();
           } else {
             const actualTypeParamNode = resolvedType.typeParameters.params[0];
-            const actualTypeParamText = context
-              .getSourceCode()
-              .getText(actualTypeParamNode);
+            const actualTypeParamText =
+              getSourceCode(context).getText(actualTypeParamNode);
             const actualTypeParamJson = parseTypeParameter(actualTypeParamText);
             if (Object.keys(actualTypeParamJson).length > 0) {
               context.report({

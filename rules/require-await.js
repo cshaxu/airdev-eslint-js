@@ -1,7 +1,3 @@
-const { loadFromCwd } = require('../utils/load-from-cwd');
-
-const ts = loadFromCwd('typescript');
-
 const requireAwait = {
   meta: {
     type: 'problem',

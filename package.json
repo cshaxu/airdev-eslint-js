@@ -15,12 +15,19 @@
     "lint",
     "rules"
   ],
+  "scripts": {
+    "test": "npm run smoke",
+    "smoke": "node scripts/smoke-test.js"
+  },
   "license": "MIT",
   "peerDependencies": {
-    "eslint": "^9.0.0"
+    "eslint": "^9.0.0 || ^10.0.0"
   },
   "dependencies": {
     "typescript": "^5.9.3",
     "minimatch": "^10.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.3"
   }
 }

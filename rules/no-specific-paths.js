@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { getFilename } = require('../utils/context');
+
 const noSpecificPathsRule = {
   meta: {
     type: 'problem',
@@ -25,7 +27,7 @@ const noSpecificPathsRule = {
     }
 
     const absoluteDisallowedPaths = disallowedPaths.map((p) => path.resolve(p));
-    const currentFilePath = context.getFilename();
+    const currentFilePath = getFilename(context);
     const absoluteCurrentFilePath = path.resolve(currentFilePath);
     const isDisallowed = absoluteDisallowedPaths.some((disallowedPath) =>
       absoluteCurrentFilePath.startsWith(disallowedPath)

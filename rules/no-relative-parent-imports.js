@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { getCwd, getFilename } = require('../utils/context');
+
 const noRelativeParentImportsRule = {
   meta: {
     type: 'problem',
@@ -15,9 +17,9 @@ const noRelativeParentImportsRule = {
     return {
       ImportDeclaration(node) {
         if (node.source.value.startsWith('../')) {
-          const srcRootPath = path.resolve(context.getCwd(), './src');
+          const srcRootPath = path.resolve(getCwd(context), './src');
           const absoluteImportPath = path.resolve(
-            path.dirname(context.getFilename()),
+            path.dirname(getFilename(context)),
             node.source.value
           );
           const relativeImportPath = path

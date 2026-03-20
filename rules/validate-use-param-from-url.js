@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { getCwd, getFilename } = require('../utils/context');
+
 const validateUseParamFromUrl = {
   meta: {
     type: 'problem',
@@ -20,8 +22,8 @@ const validateUseParamFromUrl = {
         const firstArgument = node.arguments[0];
 
         const relativeFilePath = path.relative(
-          context.getCwd(),
-          context.getFilename()
+          getCwd(context),
+          getFilename(context)
         );
         const segments = relativeFilePath.split(path.sep);
         const paramKeys = segments

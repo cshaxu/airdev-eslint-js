@@ -1,5 +1,10 @@
 const path = require('path');
+
 const { toPascalCase } = require('../utils/case');
+const {
+  getFilename,
+  getSourceCode,
+} = require('../utils/context');
 
 const getIsDefaultExportFunction = (statement) =>
   statement.type === 'ExportDefaultDeclaration' &&
@@ -28,7 +33,7 @@ const requireExportDefaultFunctionRule = {
   create: function (context) {
     return {
       Program(node) {
-        const fileName = path.parse(context.getFilename()).name;
+        const fileName = path.parse(getFilename(context)).name;
         const expectedFunctionName = toPascalCase(fileName);
 
         const defaultExportFunction = node.body.find(
@@ -52,9 +57,9 @@ const requireExportDefaultFunctionRule = {
               node: exportNameNode,
               messageId: 'missingDefaultExportFunction',
               fix: (fixer) => {
-                const functionDeclaration = context
-                  .getSourceCode()
-                  .getText(exportNameNode.declaration);
+                const functionDeclaration = getSourceCode(context).getText(
+                  exportNameNode.declaration
+                );
                 const exportDefaultText = `export default ${functionDeclaration}`;
                 return [
                   fixer.remove(exportNameNode),
@@ -95,7 +100,7 @@ const requireExportDefaultFunctionRule = {
             node: defaultExportFunction,
             messageId: 'functionNameMismatch',
             fix: (fixer) => {
-              const sourceCode = context.getSourceCode();
+              const sourceCode = getSourceCode(context);
               const functionText = sourceCode.getText(
                 defaultExportFunction.declaration
               );
