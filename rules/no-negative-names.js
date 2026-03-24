@@ -1,5 +1,27 @@
 const { toKebabCase } = require('../utils/case');
 
+function formatWords(words, template) {
+  if (template.includes('-')) {
+    return words.join('-');
+  }
+
+  if (template.includes('_')) {
+    return words.join('_');
+  }
+
+  if (template[0] && template[0] === template[0].toUpperCase()) {
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
+  }
+
+  return words
+    .map((word, index) =>
+      index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join('');
+}
+
 const noNegativeNamesRule = {
   meta: {
     type: 'suggestion',
@@ -24,19 +46,14 @@ const noNegativeNamesRule = {
       not: '',
     };
 
-    const getPositiveName = (name) => {
-      Object.entries(negativeMap).forEach(([key, value]) => {
-        const titleCasedKey = key.charAt(0).toUpperCase() + key.slice(1);
-        const titleCasedValue =
-          value.length === 0
-            ? ''
-            : value.charAt(0).toUpperCase() + value.slice(1);
-        name = name
-          .replaceAll(key, value)
-          .replaceAll(titleCasedKey, titleCasedValue);
-      });
-      return name;
-    };
+    const getPositiveName = (name) =>
+      formatWords(
+        toKebabCase(name)
+          .split('-')
+          .map((segment) => negativeMap[segment] ?? segment)
+          .filter(Boolean),
+        name
+      );
 
     const isNegativeSubstringPresent = (name) =>
       toKebabCase(name)

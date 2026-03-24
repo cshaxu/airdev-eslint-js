@@ -4,6 +4,7 @@ module.exports = {
     'no-relative-parent-imports': require('./rules/no-relative-parent-imports'),
     'no-specific-paths': require('./rules/no-specific-paths'),
     'no-specific-string': require('./rules/no-specific-strings'),
+    'require-relative-child-imports': require('./rules/require-relative-child-imports'),
     'require-await': require('./rules/require-await'),
     'next-require-export-default-function': require('./rules/require-export-default-function'),
     'next-require-next-props': require('./rules/require-next-props'),
